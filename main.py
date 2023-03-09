@@ -13,6 +13,6 @@ if __name__ == '__main__':
         a = a.split(',')
         p.append(Pipe(a[:-1], int(a[-1])))
 
-    s = Search.bfs(Problem(State(p, None, 0, (0, 0))))
+    s = Search.ids(Problem(State(p, None, 0, (0, 0))))
     s.print_path()
     s.execute_gui()
