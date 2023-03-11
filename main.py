@@ -4,7 +4,7 @@ from State import State
 from Search import Search
 
 if __name__ == '__main__':
-    test_path = 'tests/test1.txt'
+    test_path = 'tests/test2.txt'
     file = open(test_path, 'r')
     p = []
     for i in file.readlines():
@@ -13,6 +13,6 @@ if __name__ == '__main__':
         a = a.split(',')
         p.append(Pipe(a[:-1], int(a[-1])))
 
-    s = Search.ids(Problem(State(p, None, 0, (0, 0))))
+    s = Search.ucs(Problem(State(p, None, 0, (0, 0))))
     s.print_path()
     s.execute_gui()
