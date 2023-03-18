@@ -18,3 +18,24 @@ class State:
         for i in hash_strings:
             hash_string += i + '###'
         return hash_string
+
+    def h(self):
+
+        points = []
+        point = 0
+        for pipe in self.pipes:
+            if len(pipe.stack) != 0:
+                current_ball = pipe.stack[0]
+                point = 1
+
+                for i in range(1, len(pipe.stack)):
+
+                    if pipe.stack[i] == current_ball:
+                        point += 1
+                    else:
+                        point -= (len(pipe.stack) - i)
+                        break
+
+            points.append(point)
+
+        return -sum(points)

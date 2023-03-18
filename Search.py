@@ -1,7 +1,6 @@
 from Solution import Solution
 from Problem import Problem
 from datetime import datetime
-from PriorityQueue import PriorityQueue
 
 
 class Search:
@@ -69,20 +68,21 @@ class Search:
         limit = 0
         while True:
             res = Search.dls(prb, limit)
-            limit += 1
             if res is not None:
                 return res
+            limit += 1
 
     @staticmethod
     def ucs(prb: Problem):
         start_time = datetime.now()
         state = prb.initState
-        priority_queue = PriorityQueue()
-        priority_queue.insert(state)
+        priority_queue = []
+        priority_queue.append(state)
         explored = {}
 
-        while not priority_queue.isEmpty():
-            state = priority_queue.pop()
+        while len(priority_queue) != 0:
+            priority_queue.sort(key=lambda state: state.g_n)
+            state = priority_queue.pop(0)
             explored[state.__hash__()] = state
             neighbors = prb.successor(state)
 
@@ -90,6 +90,97 @@ class Search:
                 if prb.is_goal(c):
                     return Solution(c, prb, start_time)
                 if c.__hash__() not in explored:
-                    priority_queue.insert(c)
+                    priority_queue.append(c)
 
         return None
+
+    @staticmethod
+    def a_star(prb: Problem):
+        start_time = datetime.now()
+        state = prb.initState
+        priority_queue = []
+        priority_queue.append(state)
+        explored = {}
+
+        while len(priority_queue) != 0:
+            priority_queue.sort(key= lambda state: state.g_n + state.h())
+            state = priority_queue.pop(0)
+            explored[state.__hash__()] = state
+            neighbors = prb.successor(state)
+
+            for c in neighbors:
+                if prb.is_goal(c):
+                    return Solution(c, prb, start_time)
+                if c.__hash__() not in explored:
+                    priority_queue.append(c)
+
+        return None
+
+    @staticmethod
+    def dla_star(prb: Problem, cutoff: int):
+        start_time = datetime.now()
+        queue = []
+        explored = {}
+        leaf_nodes = []
+        state = prb.initState
+        queue.append(state)
+
+        while len(queue) > 0:
+            state = queue.pop()
+            explored[state.__hash__()] = state
+            neighbors = prb.successor(state)
+            leaf_nodes.extend(neighbors)
+
+            for c in neighbors:
+
+                if prb.is_goal(c):
+                    return Solution(c, prb, start_time)
+
+                if c.__hash__() not in explored and c.g_n + c.h() <= cutoff:
+                    queue.append(c)
+                    leaf_nodes.remove(c)
+
+        min_value = min(leaf_nodes, key=lambda node: node.g_n + node.h())
+        return min_value.g_n + min_value.h()
+
+    # @staticmethod
+    # def dla_star(prb: Problem, cutoff):
+    #     start_time = datetime.now()
+    #     queue = []
+    #     explored = {}
+    #     state = prb.initState
+    #     queue.append(state)
+    #
+    #     while len(queue) > 0:
+    #         state = queue.pop()
+    #
+    #         neighbors = prb.successor(state)
+    #
+    #         for c in neighbors:
+    #
+    #             if prb.is_goal(c):
+    #                 return Solution(c, prb, start_time)
+    #
+    #             if c.__hash__() not in explored and c.g_n + c.h() <= cutoff:
+    #                 queue.append(c)
+    #
+    #             if c.__hash__() not in explored and c.g_n + c.h() > cutoff:
+    #                 explored[c.__hash__()] = c
+    #
+    #     min_value = min(list(explored.values()), key=lambda node: node.g_n + node.h())
+    #     return min_value.g_n + min_value.h()
+
+
+    @staticmethod
+    def ida_star(prb: Problem):
+
+        state = prb.initState
+        cutoff = state.g_n + state.h()
+
+        while True:
+            res = Search.dla_star(prb, cutoff)
+            print(res)
+            if type(res) == Solution:
+                return res
+            else:
+                cutoff = res
