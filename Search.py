@@ -143,33 +143,6 @@ class Search:
         min_value = min(leaf_nodes, key=lambda node: node.g_n + node.h())
         return min_value.g_n + min_value.h()
 
-    # @staticmethod
-    # def dla_star(prb: Problem, cutoff):
-    #     start_time = datetime.now()
-    #     queue = []
-    #     explored = {}
-    #     state = prb.initState
-    #     queue.append(state)
-    #
-    #     while len(queue) > 0:
-    #         state = queue.pop()
-    #
-    #         neighbors = prb.successor(state)
-    #
-    #         for c in neighbors:
-    #
-    #             if prb.is_goal(c):
-    #                 return Solution(c, prb, start_time)
-    #
-    #             if c.__hash__() not in explored and c.g_n + c.h() <= cutoff:
-    #                 queue.append(c)
-    #
-    #             if c.__hash__() not in explored and c.g_n + c.h() > cutoff:
-    #                 explored[c.__hash__()] = c
-    #
-    #     min_value = min(list(explored.values()), key=lambda node: node.g_n + node.h())
-    #     return min_value.g_n + min_value.h()
-
 
     @staticmethod
     def ida_star(prb: Problem):
